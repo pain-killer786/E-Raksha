@@ -18,7 +18,7 @@ async function sendMessage() {
     displayMessage("Typing...", "bot", true);
 
     // Call OpenAI API
-    const response = await fetchOpenAIResponse(message);
+    const response = await fetchGeminiResponse(message);
 
     // Remove "Typing..." effect
     chatBox.lastElementChild.remove();
@@ -59,23 +59,18 @@ function loadChatHistory() {
 
 
 
-async function fetchOpenAIResponse(userMessage) {
+async function fetchGeminiResponse(userMessage) {
     try {
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const response = await fetch("http://localhost:5500/chat", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`
-            },
-            body: JSON.stringify({
-                model: "gpt-3.5-turbo", // or gpt-4 if you have access
-                messages: [{ role: "user", content: userMessage }]
-            })
-        });
+            headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ message: userMessage })
+            });
 
         const data = await response.json();
-        return data.choices[0].message.content.trim();
+        return data.response || "Error: No response from server.";
     } catch (error) {
+        console.error("Fetch API Error:", error);
         return "Oops! Something went wrong.";
     }
 }
