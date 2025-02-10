@@ -5,20 +5,28 @@ const apiKey = "sk-proj-KWc6u5xpb5o4oBxKYgiVOln1kaUHt7GD7_hYN-t-hi2JKLhl7fsapAAr
 //Load Chat history when page loads 
 document.addEventListener("DOMContentLoaded", loadChatHistory);
 
+
 // Initial message
 async function sendMessage() {
-    const message = userInput.value.trim();
-    if (message === "") return;
 
+
+    const message = userInput.value;
+    if (message === "") return;
+    
     // Display user message
     displayMessage(message, "user");
+    saveChatHistory(message, "user");
     userInput.value = "";
 
     // Show "Typing..." effect
     displayMessage("Typing...", "bot", true);
+<<<<<<< HEAD
 
     // Call OpenAI API
     const response = await fetchGeminiResponse(message);
+=======
+    const response = await fetchAIResponse(message);
+>>>>>>> b83220c5a8ae9128464813a8178e58df7798af7a
 
     // Remove "Typing..." effect
     chatBox.lastElementChild.remove();
@@ -26,6 +34,26 @@ async function sendMessage() {
     // Display bot response
     displayMessage(response, "bot");
     saveChatHistory(response, "bot");
+    
+    // const message = userInput.value.trim();
+    // if (message === "") return;
+
+    // // Display user message
+    // displayMessage(message, "user");
+    // userInput.value = "";
+
+    // // Show "Typing..." effect
+    // displayMessage("Typing...", "bot", true);
+
+    // // Call OpenAI API
+    // const response = await fetchOpenAIResponse(message);
+
+    // // Remove "Typing..." effect
+    // chatBox.lastElementChild.remove();
+
+    // // Display bot response
+    // displayMessage(response, "bot");
+    // saveChatHistory(response, "bot");
 }
 
 function displayMessage(text, sender, isTemporary = false) {
@@ -59,6 +87,7 @@ function loadChatHistory() {
 
 
 
+<<<<<<< HEAD
 async function fetchGeminiResponse(userMessage) {
     try {
         const response = await fetch("http://localhost:5500/chat", {
@@ -69,10 +98,32 @@ async function fetchGeminiResponse(userMessage) {
 
         const data = await response.json();
         return data.response || "Error: No response from server.";
+=======
+async function fetchAIResponse(userMessage) {
+    try {
+
+        const response = await fetch("http://localhost:4400/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                prompt: userMessage,
+            })
+        });
+
+        const data = await response.json();
+        return data;
+>>>>>>> b83220c5a8ae9128464813a8178e58df7798af7a
     } catch (error) {
         console.error("Fetch API Error:", error);
         return "Oops! Something went wrong.";
     }
+}
+
+function clearChatHistory() {
+    localStorage.removeItem("chatHistory");
+    chatBox.innerHTML = "";
 }
 
 
