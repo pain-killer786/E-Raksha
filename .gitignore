@@ -1,14 +1,5 @@
-# Ignore Environment files (API keys, etc)
-.Environment
-
-# Ignore the Backend directory
-Backend/
 
 # Ignore the node_modules directory
 node_modules/
 
-# Ignore the build directory
-package-lock.json
-
-# Ignore the build directory
-package.json
+.env

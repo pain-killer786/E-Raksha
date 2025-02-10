@@ -5,20 +5,22 @@ const apiKey = "sk-proj-KWc6u5xpb5o4oBxKYgiVOln1kaUHt7GD7_hYN-t-hi2JKLhl7fsapAAr
 //Load Chat history when page loads 
 document.addEventListener("DOMContentLoaded", loadChatHistory);
 
+
 // Initial message
 async function sendMessage() {
-    const message = userInput.value.trim();
-    if (message === "") return;
 
+
+    const message = userInput.value;
+    if (message === "") return;
+    
     // Display user message
     displayMessage(message, "user");
+    saveChatHistory(message, "user");
     userInput.value = "";
 
     // Show "Typing..." effect
     displayMessage("Typing...", "bot", true);
-
-    // Call OpenAI API
-    const response = await fetchOpenAIResponse(message);
+    const response = await fetchAIResponse(message);
 
     // Remove "Typing..." effect
     chatBox.lastElementChild.remove();
@@ -26,6 +28,26 @@ async function sendMessage() {
     // Display bot response
     displayMessage(response, "bot");
     saveChatHistory(response, "bot");
+    
+    // const message = userInput.value.trim();
+    // if (message === "") return;
+
+    // // Display user message
+    // displayMessage(message, "user");
+    // userInput.value = "";
+
+    // // Show "Typing..." effect
+    // displayMessage("Typing...", "bot", true);
+
+    // // Call OpenAI API
+    // const response = await fetchOpenAIResponse(message);
+
+    // // Remove "Typing..." effect
+    // chatBox.lastElementChild.remove();
+
+    // // Display bot response
+    // displayMessage(response, "bot");
+    // saveChatHistory(response, "bot");
 }
 
 function displayMessage(text, sender, isTemporary = false) {
@@ -59,25 +81,29 @@ function loadChatHistory() {
 
 
 
-async function fetchOpenAIResponse(userMessage) {
+async function fetchAIResponse(userMessage) {
     try {
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+
+        const response = await fetch("http://localhost:4400/api/chat", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo", // or gpt-4 if you have access
-                messages: [{ role: "user", content: userMessage }]
+                prompt: userMessage,
             })
         });
 
         const data = await response.json();
-        return data.choices[0].message.content.trim();
+        return data;
     } catch (error) {
         return "Oops! Something went wrong.";
     }
+}
+
+function clearChatHistory() {
+    localStorage.removeItem("chatHistory");
+    chatBox.innerHTML = "";
 }
 
 
